@@ -2,7 +2,7 @@
 
 Browse all countries of the world, search them and save favorites.
 
-**Live demo:** [https://YOUR-APP.vercel.app](https://country-explorer-silk-beta.vercel.app/)
+**Live demo:** [https://country-explorer-silk-beta.vercel.app/)](https://country-explorer-silk-beta.vercel.app/)
 
 ## Features
 
