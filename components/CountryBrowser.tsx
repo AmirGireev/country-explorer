@@ -1,21 +1,26 @@
 'use client';
 
+// imports
 import { useState } from 'react';
 import Link from 'next/link';
 import type { Country } from '@/lib/countries';
 import { useFavorites } from '../lib/useFavorites';
 
+// country list
 export default function CountryBrowser({ countries }: { countries: Country[] }) {
+  // state
   const [query, setQuery] = useState('');
   const [onlyFavorites, setOnlyFavorites] = useState(false);
   const { favorites, toggle } = useFavorites();
 
+  // filter list
   const visible = countries.filter(
     (c) =>
       c.name.common.toLowerCase().includes(query.toLowerCase()) &&
       (!onlyFavorites || favorites.includes(c.cca2))
   );
 
+  // render
   return (
     <>
       <div className='mb-6 flex flex-wrap items-center gap-4'>

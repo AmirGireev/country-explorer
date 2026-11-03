@@ -1,5 +1,6 @@
 'use client';
 
+// error page
 export default function Error({ reset }: { error: Error; reset: () => void }) {
   return (
     <main className='p-6'>

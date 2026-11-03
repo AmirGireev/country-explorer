@@ -1,10 +1,13 @@
 'use client';
 
+// imports
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
+// storage
 const KEY = 'favorites';
 const listeners = new Set<() => void>();
 
+// subscribe
 function subscribe(callback: () => void) {
   listeners.add(callback);
   window.addEventListener('storage', callback);
@@ -14,9 +17,11 @@ function subscribe(callback: () => void) {
   };
 }
 
+// snapshots
 const getSnapshot = () => localStorage.getItem(KEY) ?? '[]';
 const getServerSnapshot = () => '[]';
 
+// parse json
 function parse(raw: string): string[] {
   try {
     const value = JSON.parse(raw);
@@ -26,10 +31,12 @@ function parse(raw: string): string[] {
   }
 }
 
+// favorites hook
 export function useFavorites() {
   const raw = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const favorites = useMemo(() => parse(raw), [raw]);
 
+  // toggle favorite
   const toggle = useCallback((code: string) => {
     const current = parse(getSnapshot());
     const next = current.includes(code)

@@ -1,11 +1,15 @@
 'use client';
 
+// imports
 import { useFavorites } from '@/lib/useFavorites';
 
+// favorite button
 export default function FavoriteButton({ code }: { code: string }) {
+  // state
   const { favorites, toggle } = useFavorites();
   const active = favorites.includes(code);
 
+  // render
   return (
     <button
       onClick={() => toggle(code)}

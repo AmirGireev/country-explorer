@@ -1,5 +1,6 @@
+// app type
 export interface Country {
-  cca2: string; // 2-Buchstaben-Code, z. B. DE
+  cca2: string;
   name: { common: string; official: string };
   region: string;
   subregion?: string;
@@ -8,7 +9,7 @@ export interface Country {
   flags: { png: string; alt?: string };
 }
 
-// So sieht ein Land in der neuen API aus (nur die Felder, die wir brauchen)
+// api type
 interface ApiCountry {
   names: { common: string; official?: string };
   codes: { alpha_2: string };
@@ -18,6 +19,7 @@ interface ApiCountry {
   capitals?: { name: string }[];
 }
 
+// api response
 interface ApiResponse {
   data: {
     objects: ApiCountry[];
@@ -25,20 +27,22 @@ interface ApiResponse {
   };
 }
 
+// api setup
 const BASE = 'https://api.restcountries.com/countries/v5';
 
+// api request
 function request(path: string) {
   return fetch(`${BASE}${path}`, {
     headers: { Authorization: `Bearer ${process.env.RESTCOUNTRIES_API_KEY}` },
-    next: { revalidate: 86400 }, // Antwort 24 h zwischenspeichern
+    next: { revalidate: 86400 },
   });
 }
 
-// Flaggen kommen vom kostenlosen Flag-CDN der API, ohne Key
+// flag url
 const flagUrl = (code: string) =>
   `https://flags.restcountries.com/v5/w320/${code.toLowerCase()}.png`;
 
-// Wandelt die API-Antwort in unsere eigene, einfache Form um
+// map to app type
 function toCountry(c: ApiCountry): Country {
   return {
     cca2: c.codes.alpha_2,
@@ -51,12 +55,13 @@ function toCountry(c: ApiCountry): Country {
   };
 }
 
+// all countries
 export async function getAllCountries(): Promise<Country[]> {
   const all: Country[] = [];
   let offset = 0;
   let more = true;
 
-  // Max. 100 Länder pro Anfrage, deshalb seitenweise laden
+  // paginate
   while (more) {
     const res = await request(
       `?limit=100&offset=${offset}&response_fields=names.common,codes.alpha_2,region,population`
@@ -71,6 +76,7 @@ export async function getAllCountries(): Promise<Country[]> {
   return all.sort((a, b) => a.name.common.localeCompare(b.name.common));
 }
 
+// one country
 export async function getCountry(code: string): Promise<Country | null> {
   const res = await request(`/codes.alpha_2/${encodeURIComponent(code)}`);
   if (res.status === 404 || res.status === 400) return null;

@@ -1,11 +1,14 @@
+// imports
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getCountry } from '@/lib/countries';
 import FavoriteButton from '@/components/FavoriteButton';
 
+// route params
 type Props = { params: Promise<{ code: string }> };
 
+// page title
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { code } = await params;
   const country = await getCountry(code);
@@ -14,13 +17,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// detail page
 export default async function CountryPage({ params }: Props) {
-  const { code } = await params; // seit Next.js 15 ist params ein Promise
+  const { code } = await params;
   const country = await getCountry(code);
+  // 404 if missing
   if (!country) notFound();
 
   const subregion = country.subregion ?? 'n/a';
 
+  // render
   return (
     <main className='mx-auto max-w-2xl p-6'>
       <Link href='/' className='text-sm underline'>
